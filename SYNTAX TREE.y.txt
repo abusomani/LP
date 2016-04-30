@@ -1,0 +1,101 @@
+%{
+#include <stdio.h>
+int regs[26];
+int base;
+
+ struct node{
+        char op;
+        int val;
+        struct node * left;
+        struct node * right;
+ };
+
+ #define YYSTYPE struct node*
+
+ struct node * mknode();
+ struct node * root;
+%}
+
+
+%start list
+%token DIGIT
+%left '|'
+%left '&'
+%left '+' '-'
+%left '*' '/' '%'
+
+
+%%                   /* beginning of rules section */
+list:                       /*empty */
+         |
+         list expr '\n' { printf("Pre order traversal: \n"); root = $2; post_order(root); printf("\n"); }
+         |
+        list error '\n'
+         {
+           yyerrok;
+         }
+         ;
+
+expr:    '(' expr ')'
+         {
+           $$ = $2;
+         }
+         |
+         expr '+' expr
+         {
+           $$ = mknode();$$->op = '+';$$->left = $1; $$->right = $3;
+         }
+        |
+        expr '*' expr
+        {
+                $$ = mknode();$$->op = '*';$$->left = $1; $$->right = $3;
+        }
+        |
+        expr '-' expr
+        {
+                $$ = mknode();$$->op = '-';$$->left = $1; $$->right = $3;
+        }
+        |
+        expr '/' expr
+        {
+                $$ = mknode();$$->op = '/'; $$->left = $1; $$->right = $3;
+        }
+         |number {$$ = $1; }
+        ;
+
+number:  DIGIT
+         {
+          $$ = mknode(); $$->op = NULL;$$->val=$1;$$->left = NULL;$$->right = NULL;
+         }       |
+         ;
+%%
+
+struct node * mknode(){
+        return (struct node *)malloc(sizeof(struct node));
+}
+
+void post_order(struct node * root){
+        if(root == NULL)
+                return;
+
+        if(root->op != NULL)
+                printf("%c",root->op);
+        else
+                printf("%d",root->val);
+
+        if(root->left != NULL)
+                post_order(root->left);
+
+        if(root->right !=NULL)
+                post_order(root->right);
+}
+
+main()
+{
+ return(yyparse());
+}
+yyerror(s)
+char *s;
+{
+  fprintf(stderr, "%s\n",s);
+}

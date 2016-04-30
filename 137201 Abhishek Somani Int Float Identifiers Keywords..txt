@@ -1,0 +1,24 @@
+digit [0-9]+
+sign [-+]
+letter [A-Za-z]
+%{
+int idcnt = 0 , kwcnt = 0 , nchar = 0  , nword = 0 , nline = 0 , digcnt = 0 , floatcnt = 0 ,operators = 0;
+%}
+%%
+(int|float|char|alignas|alignof|asm|auto|bool|break|case|catch|char|char16_t|char32_t|class|const|constexpr|const_cast|continue|decltype|default|delete|do|double|dynamic_cast|else|enum|explicit|export|extern|false|float|for|friend|goto|if|inline|int|long|mutable,|namespace|new|noexcept|nullptr|operator|private|protected|public|register|return|short|signed|sizeof|static|struct|switch|template|this|thread_local|throw|true|try|typedef|typeid|typename|union|unsigned|using|virtual|void|wchar_t|while) {kwcnt++; printf("%s is a keyword\n",yytext);}
+{digit} {digcnt++;printf("%d is an integer\n",yytext);}
+({digit})+(\.{digit})?{digit}* {idcnt++;floatcnt++;printf("%s is a floating point number\n",yytext);}
+{letter}({letter}|{digit})*  {idcnt++;printf("%s is an identifier\n",yytext);}
+\n {nline++; nchar++;printf("Number of identifiers are %d and number of keywords are %d\n ",idcnt,kwcnt);}
+[^ \t\n]+ {nword++; nchar += yyleng; }
+.       {nchar++;}
+%%
+int yywrap(void)
+{return 1;}
+int main()
+{
+        printf("Enter the statements\n");
+        yylex();
+        printf("Number of identifiers are %d and number of keywords are %d\n ",idcnt,kwcnt);
+        return 0;
+}

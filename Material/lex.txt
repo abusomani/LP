@@ -1,0 +1,58 @@
+digit [0-9]
+letter [a-zA-Z]
+delim [ \t\n]
+ws {delim}+
+id {letter}({letter}|{digit})*
+num {digit}+(\.{digit}+)?(E[+\-]?{digit}+)?
+punct [\(\)\%\?\<\>\@\"\;\[\]\{\}]
+operate [\+\-\=\*\/\!]
+
+%{
+        int idcnt = 0,kwcnt = 0,opcnt = 0,constcnt = 0,punctcnt = 0;
+%}
+
+%%
+
+int|float|double|while|do|if|else|for|char|void {
+        kwcnt++;
+        printf("%s :    a keyword\n",yytext);
+}
+
+{id} {
+        idcnt++;
+        printf("%s :    a identifier\n",yytext);
+}
+
+{num} {
+        constcnt++;
+        printf("%s :    a constant\n",yytext);
+}
+
+{punct} {
+        punctcnt++;
+        printf("%s :    a punctuation\n",yytext);
+}
+
+{operate} {
+        opcnt++;
+        printf("%s :    an operator\n",yytext);
+}
+
+{ws} {
+	printf("number of constants :   %d\n",constcnt);
+        printf("number of punctuations :%d\n",punctcnt);
+        printf("number of operators :   %d\n",opcnt);
+        printf("number of identifiers : %d\n",idcnt);
+        printf("number of keywords :    %d\n",kwcnt);
+
+
+}
+
+
+%%
+
+int main(){
+        printf("Enter a C statement.\n");
+        yylex();
+        return 0;
+}

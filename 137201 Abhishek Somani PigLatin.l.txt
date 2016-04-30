@@ -1,0 +1,29 @@
+letter [a-zA-Z]
+vowel  [aeiouAEIOU]
+digit [0-9]+
+delim [ ]
+%{
+#include <fcntl.h>
+#include <string.h>
+#include <stdio.h>
+#define MAX 1005
+%}
+%%
+{delim}* printf(" ");
+{vowel}({letter}|{digit})* {char* substr = malloc(sizeof(char)*MAX);char arr[] ="ay"; strncpy(substr,yytext, strlen(yytext));strcat(substr,arr); printf("%s",substr);}
+{letter}({letter}|{digit})* {char* substr = malloc(sizeof(char)*MAX);char arr[] ="ay"; strncpy(substr,yytext + 1, strlen(yytext)-1);substr[strlen(yytext)-1] = yytext[0];strcat(substr,arr);substr[strlen(yytext)+3] = '\0'; printf("%s",substr); }
+%%
+int yywrap(void){return 1;}
+int main()
+{
+int fd1,fd2;
+char in[] =  "PigIn.txt";
+char out[] = "PigOut.txt";
+
+fd1 = open(in,O_RDONLY);
+fd2 = open(out,O_WRONLY);
+dup2(fd1,0);
+dup2(fd2,1);
+yylex();
+return 0;
+}

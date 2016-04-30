@@ -1,0 +1,31 @@
+ws [ \t]+
+nl [\n]+
+
+%{
+        #include <stdio.h>
+        #include <string.h>
+%}
+
+%%
+
+{ws} {
+        fprintf(yyout," ");
+}
+
+{nl} {
+        fprintf(yyout,"\n");
+}
+
+{} {
+        printf("%s",yytext);
+}
+
+%%
+
+int main(){
+        //printf("Enter a statement.\n");
+        yyin = fopen("input.txt","r");
+        yyout = fopen("output.txt","w");
+        yylex();
+        return 0;
+}

@@ -1,0 +1,22 @@
+delim [ \t]
+letter [a-zA-z]
+%{
+#include<fcntl.h>
+%}
+%%
+{delim}* {printf(" ");}
+{letter}* {printf("%s",yytext);}
+%%
+int yywrap(void) { return 1;}
+int main()
+{
+
+char input[] = "inputFile.txt";
+char output[] = "outputFile.txt";
+int fd1 = open(input,O_RDONLY);
+int fd2 = open(output,O_RDWR);
+dup2(fd1,0);
+dup2(fd2,1);
+yylex();
+return 0;
+}

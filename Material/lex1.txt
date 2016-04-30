@@ -1,0 +1,106 @@
+
+digit [0-9]
+letter [a-zA-Z]
+eol [$]
+delim [ \t\n]
+ws {delim}+
+id {letter}({letter}|{digit})*
+num {digit}+(\.{digit}+)?(E[+\-]?{digit}+)?
+punct [\(\)\%\?\<\>\@\"\;\[\]\{\}\,]
+operate [\+\-\=\*\/\!]
+
+
+%{
+        int idcnt = 0,kwcnt = 0,opcnt = 0,constcnt = 0,punctcnt = 0;
+%}
+
+%%
+
+int|float|double|while|do|if|else|for|char|void {
+        printf("\n\n");
+        kwcnt++;
+        printf("%s :    a keyword\n",yytext);
+        printf("number of identifiers : %d\n",idcnt);
+        printf("number of keywords :    %d\n",kwcnt);
+        printf("number of constants :   %d\n",constcnt);
+        printf("number of punctuations :%d\n",punctcnt);
+        printf("number of operators :   %d\n",opcnt);
+}
+
+
+{id} {
+        printf("\n\n");
+        idcnt++;
+        printf("%s :    an identifier\n",yytext);
+        printf("number of identifiers : %d\n",idcnt);
+        printf("number of keywords :    %d\n",kwcnt);
+        printf("number of constants :   %d\n",constcnt);
+        printf("number of punctuations :%d\n",punctcnt);
+        printf("number of operators :   %d\n",opcnt);
+
+}
+
+{num} {
+        printf("\n\n");
+        constcnt++;
+        printf("%s :    a constant\n",yytext);
+        printf("number of identifiers : %d\n",idcnt);
+        printf("number of keywords :    %d\n",kwcnt);
+        printf("number of constants :   %d\n",constcnt);
+        printf("number of punctuations :%d\n",punctcnt);
+        printf("number of operators :   %d\n",opcnt);
+
+}
+
+{punct} {
+        printf("\n\n");
+        punctcnt++;
+        printf("%s :    a punctuation\n",yytext);
+        printf("number of identifiers : %d\n",idcnt);
+        printf("number of keywords :    %d\n",kwcnt);
+        printf("number of constants :   %d\n",constcnt);
+        printf("number of punctuations :%d\n",punctcnt);
+        printf("number of operators :   %d\n",opcnt);
+
+}
+
+{operate} {
+        printf("\n\n");
+        opcnt++;
+        printf("%s :    an operator\n",yytext);
+        printf("number of identifiers : %d\n",idcnt);
+        printf("number of keywords :    %d\n",kwcnt);
+        printf("number of constants :   %d\n",constcnt);
+        printf("number of punctuations :%d\n",punctcnt);
+        printf("number of operators :   %d\n",opcnt);
+
+}
+
+{eol} {
+        printf("\n\n");
+        printf("number of identifiers : %d\n",idcnt);
+        printf("number of keywords :    %d\n",kwcnt);
+        printf("number of constants :   %d\n",constcnt);
+        printf("number of punctuations :%d\n",punctcnt);
+        printf("number of operators :   %d\n",opcnt);
+}
+
+{ws} {
+        printf("\n\n");
+        printf("number of identifiers : %d\n",idcnt);
+        printf("number of keywords :    %d\n",kwcnt);
+        printf("number of constants :   %d\n",constcnt);
+        printf("number of punctuations :%d\n",punctcnt);
+        printf("number of operators :   %d\n",opcnt);
+
+}
+
+
+%%
+
+int main(){
+        printf("Enter a C statement.\n");
+        yylex();
+        return 0;
+}
+

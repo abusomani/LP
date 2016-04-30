@@ -1,0 +1,48 @@
+%{
+#include"y.tab.h"
+#include<math.h>
+extern double yylval;
+%}
+%%
+[0-9] {yylval=atoi(yytext);return number;}
+[\t] ;
+[\n] return 0;
+. return yytext[0];
+%%
+[c137239@cse-linux assign2]$ cat bin.y
+%{
+        #include <stdio.h>
+        #include <math.h>
+        #define YYSTYPE double
+        int flag = 0;
+        int p = 1;
+
+%}
+%token number
+
+%%
+        S:L {printf("The result is %f\n:",$1);}
+        ;
+        L:M '.' N{$$ = $1 + $3/2;}
+         |M {$$ = $1;}
+        ;
+        M:M  B  {$$ = $1*2+$2;}
+          |B    {$$ = $1;}
+        ;
+
+        N:B N {$$ = $1 + $2/2;}
+          |B  {$$ = $1;}
+        ;
+        B:number {$$ = $1;}
+        ;
+%%
+
+int main(){
+        printf("Enter an expression: ");
+        yyparse();
+}
+
+yyerror(){
+        printf("Error\n");
+}
+
